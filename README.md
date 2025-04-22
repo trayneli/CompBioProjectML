@@ -3,9 +3,8 @@
 * https://docs.google.com/document/d/1NPdxfBH7t91a6blf6zrmwZCzc-hwK66q9_cPZXo0UZA/edit?usp=sharing
 
 ### Project
-* Alphafold
-* Uniprot
-* ProteinMPNN
+* Uniprot (annotations, EC number)
+* Alphafold --> ProteinMPNN to generate embeddings
 
 ### Data Type Processing
 - Sequence -> ProtT5 Finetuning -> output EC numbers
