@@ -126,7 +126,6 @@ for idx, (Title, true_val, pred_val) in enumerate(models):
     metric_names = list(metrics.keys())
     metric_values = list(metrics.values())
 
-    # Plot
     ax = axes[idx]
     bars = ax.barh(metric_names, metric_values, color=colors[idx])
     ax.set_xlim(0, 1.0)
@@ -134,7 +133,6 @@ for idx, (Title, true_val, pred_val) in enumerate(models):
     ax.set_title(Title)
     ax.grid(True, linestyle='--', alpha=0.7)
 
-    # Add labels
     for bar in bars:
         width = bar.get_width()
         ax.text(width + 0.02, bar.get_y() + bar.get_height()/2,
@@ -149,15 +147,12 @@ from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
 
 
-# Step 2: Create the "true" binary labels
-# 1 if predicted = actual, 0 otherwise
 EC_df['TrueLabel'] = (EC_df['EC_Pred_Mapped'] == EC_df['EC_Actual']).astype(int)
 Struct_test['TrueLabel'] = (Struct_test['StrC_Pred_Mapped'] == Struct_test['StrC_Actual']).astype(int)
 filtered_df_ac['TrueLabel'] = (filtered_df_ac['EC_Pred_Mapped'] == filtered_df_ac['EC_Actual']).astype(int)
 filtered_SC_fixed_df['TrueLabel'] = (filtered_SC_fixed_df['SC_Pred_Mapped'] == filtered_SC_fixed_df['SC_Actual']).astype(int)
 
 
-# Step 3: Get fpr, tpr for ROC
 fpr1, tpr1, thresholds = roc_curve(EC_df['TrueLabel'], EC_df['ProbabilityOutput'])
 roc_auc1 = auc(fpr1, tpr1)
 
@@ -171,10 +166,6 @@ fpr4, tpr4, thresholds = roc_curve(filtered_SC_fixed_df['TrueLabel'], filtered_S
 roc_auc4 = auc(fpr4, tpr4)
 
 
-
-# Assume you already have your original fpr, tpr, and roc_auc
-
-# Now, plot all
 plt.figure()
 
 plt.plot(fpr1, tpr1, color='blue', lw=2, label=f'Ensemble Classifier (AUC = {roc_auc1:.2f})')
@@ -182,10 +173,8 @@ plt.plot(fpr2, tpr2, color='green', lw=2, label=f'Structural Classifier (AUC = {
 plt.plot(fpr3, tpr3, color='red', lw=2, label=f'Annotation Classifier (AUC = {roc_auc3:.2f})')
 plt.plot(fpr4, tpr4, color='purple', lw=2, label=f'Sequence Classifier(AUC = {roc_auc4:.2f})')
 
-# Random classifier line
 plt.plot([0, 1], [0, 1], color='gray', linestyle='--')
 
-# Beautify the plot
 plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
 plt.xlabel('False Positive Rate')
