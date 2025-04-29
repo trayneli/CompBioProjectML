@@ -1,5 +1,4 @@
 
-## Load Annotation Classifier Data
 import pandas as pd
 import numpy as np
 from sklearn.metrics import precision_score
@@ -14,18 +13,17 @@ from sklearn.metrics import precision_score, recall_score, f1_score, roc_curve, 
 from sklearn.preprocessing import label_binarize
 import matplotlib.pyplot as plt
 import numpy as np
-
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
 from sklearn.metrics import accuracy_score
-
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import seaborn as sns
-
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
+import pandas as pd
+
 
 
 ## Load Data
@@ -83,6 +81,7 @@ ACProb=add_column_prob(AC_df)
 ## Filter for test Data
 filtered_df_ac = AC_df[AC_df['UniProtID'].isin(testIDs[0])]
 filtered_SC_fixed_df = SC_fixed_df[SC_fixed_df['UniProtID'].isin(testIDs[0])]
+## Alternative dataset loaded here. 
 #filtered_df_struct = StructClass_df[Struct_test['UniProtID'].isin(testIDs[0])]
 filtered_df_ec = EC_df[EC_df['UniProtID'].isin(testIDs[0])]
 
@@ -105,11 +104,11 @@ models = [
 ]
 
 colors = sns.color_palette("muted", 4) 
-fig, axes = plt.subplots(2, 2, figsize=(18, 12))  # 2x2 grid
-axes = axes.flatten()  # Make it easy to loop
+fig, axes = plt.subplots(2, 2, figsize=(18, 12))
+axes = axes.flatten()
 
+## Metrics, accuracy, precision, Recall, F1
 for idx, (Title, true_val, pred_val) in enumerate(models):
-    # Calculate metrics
     metrics = {
         'Accuracy': accuracy_score(true_val, pred_val),
         'Precision Macro': precision_score(true_val, pred_val, average='macro'),
@@ -141,18 +140,14 @@ for idx, (Title, true_val, pred_val) in enumerate(models):
 plt.tight_layout()
 plt.show()
 
-
-import pandas as pd
-from sklearn.metrics import roc_curve, auc
-import matplotlib.pyplot as plt
-
-
+## Set up Labels For (Correct / False ) Prediction
 EC_df['TrueLabel'] = (EC_df['EC_Pred_Mapped'] == EC_df['EC_Actual']).astype(int)
 Struct_test['TrueLabel'] = (Struct_test['StrC_Pred_Mapped'] == Struct_test['StrC_Actual']).astype(int)
 filtered_df_ac['TrueLabel'] = (filtered_df_ac['EC_Pred_Mapped'] == filtered_df_ac['EC_Actual']).astype(int)
 filtered_SC_fixed_df['TrueLabel'] = (filtered_SC_fixed_df['SC_Pred_Mapped'] == filtered_SC_fixed_df['SC_Actual']).astype(int)
 
 
+## Generate for each model
 fpr1, tpr1, thresholds = roc_curve(EC_df['TrueLabel'], EC_df['ProbabilityOutput'])
 roc_auc1 = auc(fpr1, tpr1)
 
@@ -167,7 +162,6 @@ roc_auc4 = auc(fpr4, tpr4)
 
 
 plt.figure()
-
 plt.plot(fpr1, tpr1, color='blue', lw=2, label=f'Ensemble Classifier (AUC = {roc_auc1:.2f})')
 plt.plot(fpr2, tpr2, color='green', lw=2, label=f'Structural Classifier (AUC = {roc_auc2:.2f})')
 plt.plot(fpr3, tpr3, color='red', lw=2, label=f'Annotation Classifier (AUC = {roc_auc3:.2f})')
